@@ -51,9 +51,6 @@ module.exports = (env = {}) => {
     vars.analyzeBundle === true ||
     (vars.analyzeBundle == "dev" && devMode) ||
     (vars.analyzeBundle == "prod" && !devMode);
-  let apps = [{ name: "jiraTasksHandling" }];
-  if (vars.appToBuild && vars.appToBuild != "all")
-    apps = apps.filter((app) => app.name == vars.appToBuild);
 
   const plugins = [
     new webpack.DefinePlugin(GLOBALS),
@@ -63,15 +60,6 @@ module.exports = (env = {}) => {
         devMode ? "hash" : "contenthash"
       }].css`,
     }),
-    ...apps.map(
-      (app) =>
-        new HtmlWebpackPlugin({
-          template: "./public/index.html",
-          filename: `./apps/${app.name}/index.html`,
-          chunks: [app.name, "runtime", "vendors"],
-          chunksSortMode: "none",
-        })
-    ),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
       filename: "./index.html",
@@ -118,15 +106,9 @@ module.exports = (env = {}) => {
     node: {
       fs: "empty",
     },
-    entry: apps.reduce(
-      (res, app) => {
-        res[app.name] = ["@babel/polyfill", SRC_DIR + `/apps/${app.name}.ts`];
-        return res;
-      },
-      {
-        root: ["@babel/polyfill", SRC_DIR + "/apps/root.ts"],
-      }
-    ),
+    entry: {
+      root: ["@babel/polyfill", SRC_DIR + "/apps/root.ts"],
+    },
     output: {
       path: BUILD_DIR,
       filename: `apps/[name]/[name].bundle.[${
