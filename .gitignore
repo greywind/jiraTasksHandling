@@ -1,0 +1,6 @@
+node_modules/
+output/
+webpack.config.variables.js
+.vscode/
+built/
+coverage/
