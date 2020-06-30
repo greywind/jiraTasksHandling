@@ -1,26 +1,40 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@core/*": ["./src/core/*"],
-      "@shared/*": ["./src/components/_shared/*"],
-      "@components/*": ["./src/components/*"],
-      "@services/*": ["./src/services/*"],
-      "@img/*": ["./public/img/*"]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@core/*": [
+                "./src/core/*"
+            ],
+            "@shared/*": [
+                "./src/components/_shared/*"
+            ],
+            "@components/*": [
+                "./src/components/*"
+            ],
+            "@services/*": [
+                "./src/services/*"
+            ],
+            "@img/*": [
+                "./public/img/*"
+            ]
+        },
+        "outDir": "./built/",
+        "noImplicitAny": true,
+        "module": "esnext",
+        "jsx": "react",
+        "allowJs": true,
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "target": "esnext",
+        "noEmit": true,
+        "experimentalDecorators": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true
     },
-    "outDir": "./built/",
-    "noImplicitAny": true,
-    "module": "esnext",
-    "jsx": "react",
-    "allowJs": true,
-    "sourceMap": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "target": "esnext",
-    "noEmit": true,
-    "experimentalDecorators": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true
-  },
-  "include": ["./src/**/*", "./.storybook/**/*", "./.eslintrc.js"]
+    "include": [
+        "./src/**/*",
+        "./.storybook/**/*",
+        "./.eslintrc.js"
+    ]
 }

@@ -7,7 +7,9 @@ interface LocaleSvcContext {
 export const LocaleSvcContext = React.createContext<LocaleSvcContext>(null);
 
 const ServicesProvider: React.FunctionComponent = ({ children }) => {
-    const [localeSvcValue, setLocaleSvcValue] = React.useState<LocaleSvcContext>({ locale: "ru" });
+    const [localeSvcValue, setLocaleSvcValue] = React.useState<LocaleSvcContext>({
+        locale: "ru",
+    });
     React.useEffect(() => {
         const localeChangeHandler = (): void => {
             const locale = localeSvc.getLocale();
@@ -17,10 +19,11 @@ const ServicesProvider: React.FunctionComponent = ({ children }) => {
         return () => localeSvc.unsubscribeOnLocaleChange(localeChangeHandler);
     }, []);
 
-    return <LocaleSvcContext.Provider value={localeSvcValue}>
-        {children}
-    </LocaleSvcContext.Provider>
-        ;
+    return (
+        <LocaleSvcContext.Provider value={localeSvcValue}>
+            {children}
+        </LocaleSvcContext.Provider>
+    );
 };
 
 export default ServicesProvider;

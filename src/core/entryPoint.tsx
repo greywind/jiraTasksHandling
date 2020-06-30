@@ -20,104 +20,111 @@ import ServicesProvider from "@services/servicesProvider";
 declare let __DEV__: boolean;
 
 interface EntryPointInitOptions {
-  noStartupLogging?: boolean;
-  customContainerClass?: string;
+    noStartupLogging?: boolean;
+    customContainerClass?: string;
 }
 
 interface EntryPointRoute {
-  redirectFrom?: string;
-  to?: string;
-  path?: string;
-  name?: string;
-  component?: React.FunctionComponent<unknown>;
-  exact?: boolean;
+    redirectFrom?: string;
+    to?: string;
+    path?: string;
+    name?: string;
+    component?: React.FunctionComponent<unknown>;
+    exact?: boolean;
 }
 
 export async function init(
-  app: string,
-  routes?: EntryPointRoute[],
-  opt?: EntryPointInitOptions
+    app: string,
+    routes?: EntryPointRoute[],
+    opt?: EntryPointInitOptions
 ): Promise<void> {
-  await configSvc.init();
-  opt = opt || {};
-  routes = routes || [];
-  const rayId = uuid();
-  wget.rayId = rayId;
-  Logger.setRayId(rayId);
-  Logger.setReactApp(app);
-  let startMetrica;
-  if (!opt.noStartupLogging) {
-    startMetrica = Logger.startLastingMetrica("start");
-    // eslint-disable-next-line no-console
-    console.log(`${app} ${getAppVersion()}`);
-  }
-
-  function logError(message: string, error: Error): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (error && (error as any).skipLoggingIfNotCatched) return;
-    if (message && message.startsWith("Failed to register a ServiceWorker"))
-      Logger.warning(message, { exception: error });
-    else {
-      Logger.error(message, {}, error);
+    await configSvc.init();
+    opt = opt || {};
+    routes = routes || [];
+    const rayId = uuid();
+    wget.rayId = rayId;
+    Logger.setRayId(rayId);
+    Logger.setReactApp(app);
+    let startMetrica;
+    if (!opt.noStartupLogging) {
+        startMetrica = Logger.startLastingMetrica("start");
+        // eslint-disable-next-line no-console
+        console.log(`${app} ${getAppVersion()}`);
     }
-  }
 
-  window.addEventListener("error", (errorEvent) => {
-    // ignore errors from react source in DEV mode. To avoid duplicate errors
-    // SEE: https://github.com/facebook/react/issues/10474
-    if (errorEvent.filename.indexOf("react-dom.development.js") >= 0) {
-      return true;
+    function logError(message: string, error: Error): void {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (error && (error as any).skipLoggingIfNotCatched) return;
+        if (message && message.startsWith("Failed to register a ServiceWorker"))
+            Logger.warning(message, { exception: error });
+        else {
+            Logger.error(message, {}, error);
+        }
     }
-    logError(errorEvent.message, errorEvent.error);
-  });
-  window.addEventListener("unhandledrejection", (event) => {
-    logError(event.reason.message, event.reason);
-  });
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      try {
-        navigator.serviceWorker.register("/service-worker.js");
-      } catch (e) {
-        Logger.warning("failed to register service worker", { exception: e });
-      }
+
+    window.addEventListener("error", errorEvent => {
+        // ignore errors from react source in DEV mode. To avoid duplicate errors
+        // SEE: https://github.com/facebook/react/issues/10474
+        if (errorEvent.filename.indexOf("react-dom.development.js") >= 0) {
+            return true;
+        }
+        logError(errorEvent.message, errorEvent.error);
     });
-  }
+    window.addEventListener("unhandledrejection", event => {
+        logError(event.reason.message, event.reason);
+    });
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            try {
+                navigator.serviceWorker.register("/service-worker.js");
+            } catch (e) {
+                Logger.warning("failed to register service worker", {
+                    exception: e,
+                });
+            }
+        });
+    }
 
-  ReactDOM.render(
-    <ErrorBoundary>
-      <Suspense
-        fallback={<div> {`${localeSvc.get("common").loading}...`} </div>}
-      >
-        <ThemeProvider theme={theme.current}>
-          <ServicesProvider>
-            <BrowserRouter>
-              <>
-                <ToastContainer />
-                <Container fluid>
-                  <Switch>
-                    {routes
-                      .filter((p) => !p.redirectFrom)
-                      .map(({ path, name, component, exact }) => (
-                        <Route
-                          key={path}
-                          {...{ path, name, component, exact }}
-                        />
-                      ))}
-                    {routes
-                      .filter((p) => !!p.redirectFrom)
-                      .map(({ redirectFrom, to }) => (
-                        <Redirect key={redirectFrom} to={to} />
-                      ))}
-                  </Switch>
-                </Container>
-              </>
-            </BrowserRouter>
-          </ServicesProvider>
-        </ThemeProvider>
-      </Suspense>
-    </ErrorBoundary>,
-    document.getElementById("root")
-  );
+    ReactDOM.render(
+        <ErrorBoundary>
+            <Suspense
+                fallback={<div> {`${localeSvc.get("common").loading}...`} </div>}
+            >
+                <ThemeProvider theme={theme.current}>
+                    <ServicesProvider>
+                        <BrowserRouter>
+                            <>
+                                <ToastContainer />
+                                <Container fluid>
+                                    <Switch>
+                                        {routes
+                                            .filter(p => !p.redirectFrom)
+                                            .map(({ path, name, component, exact }) => (
+                                                <Route
+                                                    key={path}
+                                                    {...{
+                                                        path,
+                                                        name,
+                                                        component,
+                                                        exact,
+                                                    }}
+                                                />
+                                            ))}
+                                        {routes
+                                            .filter(p => !!p.redirectFrom)
+                                            .map(({ redirectFrom, to }) => (
+                                                <Redirect key={redirectFrom} to={to} />
+                                            ))}
+                                    </Switch>
+                                </Container>
+                            </>
+                        </BrowserRouter>
+                    </ServicesProvider>
+                </ThemeProvider>
+            </Suspense>
+        </ErrorBoundary>,
+        document.getElementById("root")
+    );
 
-  if (!opt.noStartupLogging) startMetrica.end();
+    if (!opt.noStartupLogging) startMetrica.end();
 }

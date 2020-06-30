@@ -6,18 +6,18 @@ import { Route, Switch } from "react-router-dom";
 import Container from "reactstrap/lib/Container";
 
 const Router: React.FunctionComponent = () => {
-  const { links } = useNavigation();
-  return (
-    <>
-      <Container>
-        <Suspense fallback="Loading...">
-          <Switch>
-            <Route path={links.home} component={Home} exact />
-          </Switch>
-        </Suspense>
-      </Container>
-    </>
-  );
+    const { links } = useNavigation();
+    return (
+        <>
+            <Container>
+                <Suspense fallback="Loading...">
+                    <Switch>
+                        <Route path={links.home} component={Home} exact />
+                    </Switch>
+                </Suspense>
+            </Container>
+        </>
+    );
 };
 
 whyDidYouRender(Router);

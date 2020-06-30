@@ -5,9 +5,7 @@ import useStyles from "./styles";
 
 const Home: React.FunctionComponent<Props> = () => {
     const classes = useStyles();
-    return <div className={classes.divClass}>
-        Hello, world!
-    </div>;
+    return <div className={classes.divClass}>Hello, world!</div>;
 };
 whyDidYouRender(Home);
 

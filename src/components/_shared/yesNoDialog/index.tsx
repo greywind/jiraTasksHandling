@@ -11,13 +11,21 @@ const YesNoDialog: React.FunctionComponent<YesNoDialogProps> = props => {
 
     const l = useLocale();
 
-    return <Dialog title={props.title} closeButton={props.closeButton} {...dialogProps}>
-        <DialogFooter>
-            <Button onClick={() => dialogProps.close(true)}>{l.yes}</Button>
-            <Button color="danger" onClick={() => dialogProps.close(false)}>{l.no}</Button>
-        </DialogFooter>
-        {props.children}
-    </Dialog>;
+    return (
+        <Dialog
+            title={props.title}
+            closeButton={props.closeButton}
+            {...dialogProps}
+        >
+            <DialogFooter>
+                <Button onClick={() => dialogProps.close(true)}>{l.yes}</Button>
+                <Button color="danger" onClick={() => dialogProps.close(false)}>
+                    {l.no}
+                </Button>
+            </DialogFooter>
+            {props.children}
+        </Dialog>
+    );
 };
 whyDidYouRender(YesNoDialog);
 

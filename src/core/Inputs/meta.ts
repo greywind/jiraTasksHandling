@@ -1,4 +1,4 @@
-import { RegisterInput } from "react-hook-form/dist/types";
+import { ValidationOptions } from "react-hook-form/dist/types";
 import { OptionType } from "./types";
 import { ReactNode } from "react";
 
@@ -31,7 +31,7 @@ export interface FormInputProps extends SharedProps {
     layout?: "horizontal" | "vertical";
     nullable?: boolean;
     multi?: boolean;
-    validation?: RegisterInput;
+    validation?: ValidationOptions;
     required?: boolean | string;
     max?: ValidationRule;
     min?: ValidationRule;

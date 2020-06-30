@@ -1,7 +1,8 @@
 const commonLocaleValues = {
     tryAgainLater: {
         en: "Ooops! Something goes wrong, please try again later or contact us...",
-        de: "Ooops! Geht etwas schief, bitte versuchen Sie es später erneut oder Kontaktieren Sie uns...",
+        de:
+            "Ooops! Geht etwas schief, bitte versuchen Sie es später erneut oder Kontaktieren Sie uns...",
     },
     yes: {
         en: "Yes",

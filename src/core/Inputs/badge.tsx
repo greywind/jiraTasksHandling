@@ -3,8 +3,7 @@ import classnames from "classnames";
 import React from "react";
 import { createUseStyles } from "react-jss";
 
-export interface BadgeProps {
-}
+export interface BadgeProps { }
 
 const styles = {
     badge: {
@@ -40,14 +39,24 @@ export interface BadgeProps {
 }
 
 const Badge: React.FunctionComponent<BadgeProps> = props => {
-    var classes = useStyles();
-    const style = { backgroundColor: props.backgroundColor, color: props.foregroundColor, fontWidth: props.fontWidth };
-    return <div style={style}
-        onClick={() => props.onClick()}
-        className={classnames({
-            [classes.badge]: true,
-            [classes.badgeSelected]: props.isSelected,
-        })}>{props.children}</div>;
+    const classes = useStyles();
+    const style = {
+        backgroundColor: props.backgroundColor,
+        color: props.foregroundColor,
+        fontWidth: props.fontWidth,
+    };
+    return (
+        <div
+            style={style}
+            onClick={() => props.onClick()}
+            className={classnames({
+                [classes.badge]: true,
+                [classes.badgeSelected]: props.isSelected,
+            })}
+        >
+            {props.children}
+        </div>
+    );
 };
 
 export default Badge;

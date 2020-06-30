@@ -1,9 +1,7 @@
 import moment from "moment";
 import configSvc from "./services/configSvc";
 
-const config = configSvc.value;
-
-declare var __DEV__: string;
+declare let __DEV__: string;
 
 const loggerLevels = {
     verbose: "Verbose",
@@ -44,17 +42,24 @@ class Logger {
             const initModule = await import("./utils");
             this.version = initModule.getAppVersion();
             this.stringFormat = initModule.stringFormat;
-            this.authHeader = `Basic ${window.btoa(configSvc.value.logging?.authHeader)}`;
+            this.authHeader = `Basic ${window.btoa(
+                configSvc.value.logging?.authHeader
+            )}`;
             this.baseUrl = configSvc.value.logging?.url;
             this.enabled = !!configSvc.value.logging;
         })();
         this.protocol = location.protocol;
     }
 
-    public async log({ action, message, data, level, exception }: LogEvent): Promise<void> {
+    public async log({
+        action,
+        message,
+        data,
+        level,
+        exception,
+    }: LogEvent): Promise<void> {
         await this.initTask;
-        if (!this.enabled)
-            return;
+        if (!this.enabled) return;
         const CustomData = data || {};
         let Exception;
         if (exception) {
@@ -83,12 +88,15 @@ class Logger {
             console.log(body.Message, body);
             return;
         }
-        if (process.env.LOGGING_DISABLED == "Y")
-            return;
-        fetch(this.stringFormat(this.baseUrl, moment().format("YYYY.MM.DD")),
+        if (process.env.LOGGING_DISABLED == "Y") return;
+        fetch(
+            this.stringFormat(this.baseUrl, moment().format("YYYY.MM.DD")),
             {
                 method: "POST",
-                headers: { "Content-Type": "application/json", Authorization: this.authHeader },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: this.authHeader,
+                },
                 body: JSON.stringify(body),
             }
             // eslint-disable-next-line no-console
@@ -96,14 +104,28 @@ class Logger {
     }
 
     public error(message: string, data: any, exception: Error): void {
-        if (typeof exception !== "object")
-            exception = new Error(exception);
-        this.log({ action: `error${this.reactApp ? `.${this.reactApp}` : ""}`, message, data, level: loggerLevels.error, exception });
+        if (typeof exception !== "object") exception = new Error(exception);
+        this.log({
+            action: `error${this.reactApp ? `.${this.reactApp}` : ""}`,
+            message,
+            data,
+            level: loggerLevels.error,
+            exception,
+        });
     }
     public metrica(action: string, message?: string, data?: any): void {
-        this.log({ action: `metrica${this.reactApp ? `.${this.reactApp}` : ""}.${action}`, message, data, level: loggerLevels.information });
+        this.log({
+            action: `metrica${this.reactApp ? `.${this.reactApp}` : ""}.${action}`,
+            message,
+            data,
+            level: loggerLevels.information,
+        });
     }
-    public startLastingMetrica(action: string, message?: string, data?: any): { end: () => void } {
+    public startLastingMetrica(
+        action: string,
+        message?: string,
+        data?: any
+    ): { end: () => void } {
         const start = Date.now();
         data = data || {};
         return {
@@ -114,11 +136,21 @@ class Logger {
         };
     }
     public warning(message: string, data: any): void {
-        this.log({ action: `warning${this.reactApp ? `.${this.reactApp}` : ""}`, message, data, level: loggerLevels.warning });
+        this.log({
+            action: `warning${this.reactApp ? `.${this.reactApp}` : ""}`,
+            message,
+            data,
+            level: loggerLevels.warning,
+        });
     }
 
     public network(message: string, data: any): void {
-        this.log({ action: `network${this.reactApp ? `.${this.reactApp}` : ""}`, message, data, level: loggerLevels.network });
+        this.log({
+            action: `network${this.reactApp ? `.${this.reactApp}` : ""}`,
+            message,
+            data,
+            level: loggerLevels.network,
+        });
     }
 
     public setReactApp(app: string): void {

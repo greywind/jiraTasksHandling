@@ -1,39 +1,39 @@
 {
-  "presets": [
-    [
-      "@babel/preset-react"
+    "presets": [
+        [
+            "@babel/preset-react"
+        ],
+        [
+            "@babel/preset-env"
+        ],
+        [
+            "@babel/preset-typescript"
+        ]
     ],
-    [
-      "@babel/preset-env"
+    "plugins": [
+        "@babel/plugin-proposal-object-rest-spread",
+        "jsx-control-statements",
+        [
+            "@babel/plugin-transform-runtime",
+            {
+                "regenerator": true
+            }
+        ],
+        "@babel/plugin-syntax-dynamic-import",
+        [
+            "@babel/plugin-proposal-decorators",
+            {
+                "decoratorsBeforeExport": true
+            }
+        ],
+        "@babel/proposal-class-properties",
+        "@babel/plugin-proposal-optional-chaining"
     ],
-    [
-      "@babel/preset-typescript"
-    ]
-  ],
-  "plugins": [
-    "@babel/plugin-proposal-object-rest-spread",
-    "jsx-control-statements",
-    [
-      "@babel/plugin-transform-runtime",
-      {
-        "regenerator": true
-      }
-    ],
-    "@babel/plugin-syntax-dynamic-import",
-    [
-      "@babel/plugin-proposal-decorators",
-      {
-        "decoratorsBeforeExport": true
-      }
-    ],
-    "@babel/proposal-class-properties",
-    "@babel/plugin-proposal-optional-chaining"
-  ],
-  "env": {
-    "test": {
-      "plugins": [
-        "dynamic-import-node"
-      ]
+    "env": {
+        "test": {
+            "plugins": [
+                "dynamic-import-node"
+            ]
+        }
     }
-  }
 }
