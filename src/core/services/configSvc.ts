@@ -1,8 +1,9 @@
 import merge from "lodash/merge";
 
 export interface Config {
-    apiUrl: string;
-    facebookId?: string;
+    jiraBaseUrl: string;
+    jiraUsername: string;
+    jiraApiToken: string;
 
     logging?: {
         url: string;
@@ -23,7 +24,7 @@ class ConfigSvc {
             }));
     }
 
-    private _value: Config = {} as any;
+    private _value: Config = null;
     public get value(): Config {
         return this._value;
     }

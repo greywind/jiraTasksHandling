@@ -30,7 +30,7 @@ class Wget {
             flattenObject(opt.qs) as ParsedUrlQueryInput
         );
 
-        const composedUrl = `${configSvc.value.apiUrl}/${action}${qs ? `?${qs}` : ""
+        const composedUrl = `${configSvc.value.jiraBaseUrl}/${action}${qs ? `?${qs}` : ""
             }`;
         function logError(message: string, e: Error): void {
             Logger.network(message, {

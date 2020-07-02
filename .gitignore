@@ -4,3 +4,4 @@ webpack.config.variables.js
 .vscode/
 built/
 coverage/
+config.json
