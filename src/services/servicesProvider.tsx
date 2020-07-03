@@ -1,10 +1,15 @@
+import localeSvc, { AvailableLocales } from "@core/services/localeSvc";
+import tasksSvc from "@services/tasksSvc";
 import React from "react";
-import localeSvc, { AvailableLocales } from "../core/services/localeSvc";
 
 interface LocaleSvcContext {
     locale: AvailableLocales;
 }
 export const LocaleSvcContext = React.createContext<LocaleSvcContext>(null);
+
+export const TasksSvcContext = React.createContext<typeof tasksSvc>({
+    getAllIssuesInTheCurrentSprint: async () => [],
+});
 
 const ServicesProvider: React.FunctionComponent = ({ children }) => {
     const [localeSvcValue, setLocaleSvcValue] = React.useState<LocaleSvcContext>({
@@ -21,7 +26,9 @@ const ServicesProvider: React.FunctionComponent = ({ children }) => {
 
     return (
         <LocaleSvcContext.Provider value={localeSvcValue}>
-            {children}
+            <TasksSvcContext.Provider value={tasksSvc}>
+                {children}
+            </TasksSvcContext.Provider>
         </LocaleSvcContext.Provider>
     );
 };

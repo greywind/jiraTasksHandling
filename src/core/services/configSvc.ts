@@ -4,8 +4,7 @@ export interface Config {
     jiraBaseUrl: string;
     jiraUsername: string;
     jiraApiToken: string;
-
-    logging?: {
+    logging: {
         url: string;
         authHeader: string;
     };
@@ -14,18 +13,19 @@ export interface Config {
 class ConfigSvc {
     private initTask: Promise<void> = null;
     public async init(): Promise<void> {
-        if (this.initTask) return this.initTask;
-        return (this.initTask = new Promise<Response>((resolve) => {
-            resolve(fetch("/config.json"));
-        })
-            .then((data) => data.json())
-            .then((json) => {
-                merge(this._value, json);
-            }));
+        if (this.initTask)
+            return this.initTask;
+
+        this.initTask = (async (): Promise<void> => {
+            const data = await fetch("/config.json");
+            const json = await data.json();
+            merge(this._value, json);
+        })();
+        return this.initTask;
     }
 
-    private _value: Config = null;
-    public get value(): Config {
+    private _value: Partial<Config> = {};
+    public get value(): Partial<Config> {
         return this._value;
     }
 }

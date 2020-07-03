@@ -30,8 +30,7 @@ class Wget {
             flattenObject(opt.qs) as ParsedUrlQueryInput
         );
 
-        const composedUrl = `${configSvc.value.jiraBaseUrl}/${action}${qs ? `?${qs}` : ""
-            }`;
+        const composedUrl = `https://cors-anywhere.herokuapp.com/https://smooveio.atlassian.net/rest/api/2/${action}${qs ? `?${qs}` : ""}`;
         function logError(message: string, e: Error): void {
             Logger.network(message, {
                 url: `${window.location.protocol}${composedUrl}`,
@@ -48,9 +47,14 @@ class Wget {
             const args: RequestInit = {
                 method,
                 credentials: "include",
-                headers: {},
+                headers: {
+                    Authorization: window.btoa("sergey.b@smoove.io:yumXQw1YbIGeyo4ketJ4510B"),
+                    origin: "???",
+                },
+                mode: "no-cors",
             };
-            if (body) args.body = JSON.stringify(body);
+            if (body)
+                args.body = JSON.stringify(body);
             if (["POST", "PUT", "DELETE"].includes(method)) {
                 args.headers = {
                     Accept: "application/json",
