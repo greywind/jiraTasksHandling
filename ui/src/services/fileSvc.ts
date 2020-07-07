@@ -2,7 +2,7 @@ import configSvc from "@core/services/configSvc";
 import wget from "@core/wget";
 import { FileInfo } from "src/models/file";
 
-const baseUrl = configSvc.value.jiraBaseUrl;
+const baseUrl = configSvc.value.apiUrl;
 
 export declare type ProgressDelegate =
     | ((this: XMLHttpRequest, ev: ProgressEvent) => any)

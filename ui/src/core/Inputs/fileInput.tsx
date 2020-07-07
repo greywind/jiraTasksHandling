@@ -149,7 +149,7 @@ const FilePreview: React.FunctionComponent<FilePreviewProps> = ({
     wrapperClassName,
 }) => {
     if (file.type == "Image") {
-        const imageSrc = `${configSvc.value.jiraBaseUrl}/file/${file.id}`;
+        const imageSrc = `${configSvc.value.apiUrl}/file/${file.id}`;
         return (
             <div className={wrapperClassName}>
                 <img src={imageSrc} />

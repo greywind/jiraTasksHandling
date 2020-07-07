@@ -17,8 +17,6 @@ import { ThemeProvider } from "react-jss";
 import { Container } from "reactstrap";
 import ServicesProvider from "@services/servicesProvider";
 
-declare let __DEV__: boolean;
-
 interface EntryPointInitOptions {
     noStartupLogging?: boolean;
     customContainerClass?: string;

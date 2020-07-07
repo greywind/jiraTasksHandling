@@ -30,7 +30,7 @@ class Wget {
             flattenObject(opt.qs) as ParsedUrlQueryInput
         );
 
-        const composedUrl = `https://cors-anywhere.herokuapp.com/https://smooveio.atlassian.net/rest/api/2/${action}${qs ? `?${qs}` : ""}`;
+        const composedUrl = `${configSvc.value.apiUrl}${action}${qs ? `?${qs}` : ""}`;
         function logError(message: string, e: Error): void {
             Logger.network(message, {
                 url: `${window.location.protocol}${composedUrl}`,
@@ -47,11 +47,6 @@ class Wget {
             const args: RequestInit = {
                 method,
                 credentials: "include",
-                headers: {
-                    Authorization: window.btoa("sergey.b@smoove.io:yumXQw1YbIGeyo4ketJ4510B"),
-                    origin: "???",
-                },
-                mode: "no-cors",
             };
             if (body)
                 args.body = JSON.stringify(body);
@@ -62,6 +57,7 @@ class Wget {
                 };
             }
             response = await fetch(composedUrl, args);
+            console.warn("response", response);
             let result;
             try {
                 if (opt.responseType === "blob") result = await response.blob();
@@ -71,9 +67,11 @@ class Wget {
             } catch (e) {
                 result = null;
             }
-            if (!response.ok) throw result;
+            if (!response.ok)
+                throw result;
             return result;
         } catch (e) {
+            console.warn(e);
             if (!e?.message && e?.error && e?.error?.message)
                 e.message = e.error.message;
             // Errors that came not from API

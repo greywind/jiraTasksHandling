@@ -1,9 +1,7 @@
 import merge from "lodash/merge";
 
 export interface Config {
-    jiraBaseUrl: string;
-    jiraUsername: string;
-    jiraApiToken: string;
+    apiUrl: string;
     logging: {
         url: string;
         authHeader: string;
@@ -20,6 +18,7 @@ class ConfigSvc {
             const data = await fetch("/config.json");
             const json = await data.json();
             merge(this._value, json);
+            console.log("CONFIGSVC INITED");
         })();
         return this.initTask;
     }

@@ -9,6 +9,7 @@ type Configuration struct {
 	JiraBaseUrl  string
 	JiraUsername string
 	JiraPassword string
+	UiUrl        string
 }
 
 var config Configuration

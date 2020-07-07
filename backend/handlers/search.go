@@ -9,6 +9,8 @@ import (
 )
 
 func GetAllIssuesInTheCurrentSprint(resp http.ResponseWriter, req *http.Request) {
+	println("start: GetAllIssuesInTheCurrentSprint")
+	defer print("end: GetAllIssuesInTheCurrentSprint")
 	startAt := req.URL.Query().Get("startAt")
 
 	jiraReq, _ := http.NewRequest("GET", config.Get().JiraBaseUrl+"/search/", nil)
@@ -28,6 +30,9 @@ func GetAllIssuesInTheCurrentSprint(resp http.ResponseWriter, req *http.Request)
 		io.Copy(resp, strings.NewReader(err.Error()))
 		return
 	}
+	defer jiraResp.Body.Close()
 
+	resp.Header().Set("Access-Control-Allow-Origin", config.Get().UiUrl)
+	resp.Header().Set("Access-Control-Allow-Credentials", "true")
 	io.Copy(resp, jiraResp.Body)
 }

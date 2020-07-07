@@ -16,10 +16,9 @@ function normalizeIssue(issue: IssueDto): Issue {
 class TasksSvc {
     public async getAllIssuesInTheCurrentSprint(): Promise<Issue[]> {
         const issuesDto: IssueDto[] = [];
-        const jql = "Sprint in openSprints() AND parent is EMPTY";
         let startAt = 0;
         for (; ;) {
-            const response = await wget.get<SearchResponse>("search", { qs: { jql, startAt } });
+            const response = await wget.get<SearchResponse>("getAllIssuesInTheCurrentSprint", { qs: { startAt } });
             issuesDto.push(...response.issues);
             if (response.total <= response.startAt + response.maxResults)
                 break;
