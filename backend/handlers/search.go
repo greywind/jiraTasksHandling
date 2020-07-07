@@ -1,27 +1,32 @@
 package handlers
 
 import (
-	"bytes"
+	"io"
 	"net/http"
+	"strings"
 
 	"github.com/greywind/jiraTasksHandling/config"
 )
 
 func GetAllIssuesInTheCurrentSprint(resp http.ResponseWriter, req *http.Request) {
 	jiraReq, _ := http.NewRequest("GET", config.Get().JiraBaseUrl+"/search/", nil)
-	jiraReq.URL.Query().Add("jql", "Sprint in openSprints() AND parent is EMPTY")
 	jiraReq.SetBasicAuth(config.Get().JiraUsername, config.Get().JiraPassword)
+
+	qs := jiraReq.URL.Query()
+	qs.Add("jql", "Sprint in openSprints() AND parent is EMPTY")
+
+	jiraReq.URL.RawQuery = qs.Encode()
 
 	client := http.DefaultClient
 
 	jiraResp, err := client.Do(jiraReq)
 
+	print(jiraReq.URL.String())
+
 	if err != nil {
-		resp.Write(bytes.NewBufferString(err.Error()).Bytes())
+		io.Copy(resp, strings.NewReader(err.Error()))
 		return
 	}
 
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(jiraResp.Body)
-	resp.Write(buf.Bytes())
+	io.Copy(resp, jiraResp.Body)
 }
