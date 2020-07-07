@@ -15,7 +15,7 @@ function normalizeIssue(issue: IssueDto): Issue {
         return undefined;
     const result: Issue = {
         id: issue.id,
-        key: issue.key,
+        issueKey: issue.key,
         title: issue.fields.summary,
         link: `${configSvc.value.jiraTaskBaseUrl}${issue.key}`,
         status: issue.fields.status.name as IssueStatus,
