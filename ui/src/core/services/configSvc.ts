@@ -6,6 +6,7 @@ export interface Config {
         url: string;
         authHeader: string;
     };
+    jiraTaskBaseUrl: string;
 }
 
 class ConfigSvc {

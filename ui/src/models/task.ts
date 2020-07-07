@@ -176,7 +176,7 @@ export interface FieldsDto {
     aggregatetimeoriginalestimate?: number;
     versions: any[];
     issuelinks: IssuelinkDto[];
-    assignee: AssigneeDto;
+    assignee?: AssigneeDto;
     updated: Date;
     status: StatusDto;
     components: any[];
@@ -202,7 +202,7 @@ export interface FieldsDto {
     customfield_10080?: any;
     customfield_10081?: any;
     customfield_10082?: any;
-    subtasks: IssueDto[];
+    subtasks?: IssueDto[];
     customfield_10083: any[];
     customfield_10084?: any;
     reporter: ReporterDto;
@@ -229,17 +229,19 @@ export interface IssueDto {
     fields: FieldsDto;
 }
 
-export enum IssueStatus {
-    toDo,
-    onHold,
-    inProgress,
-    crqa,
-    readyToRelease,
-}
+export type IssueStatus =
+    "To Do" |
+    "On Hold" |
+    "In Progress" |
+    "QA & CodeReview" |
+    "Done" |
+    "Deployed" |
+    "Canceled"
 
 export interface Issue {
     id: string;
     key: string;
+    title: string;
     link: string;
     assignee: string;
     status: IssueStatus,

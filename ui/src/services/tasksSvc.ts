@@ -1,5 +1,6 @@
-import { Issue, IssueDto } from "src/models/task";
+import { Issue, IssueDto, IssueStatus, StatusDto } from "src/models/task";
 import wget from "@core/wget";
+import configSvc from "@core/services/configSvc";
 
 export interface SearchResponse {
     expand: string;
@@ -10,7 +11,19 @@ export interface SearchResponse {
 }
 
 function normalizeIssue(issue: IssueDto): Issue {
-    return issue as unknown as Issue;
+    if (!issue)
+        return undefined;
+    const result: Issue = {
+        id: issue.id,
+        key: issue.key,
+        title: issue.fields.summary,
+        link: `${configSvc.value.jiraTaskBaseUrl}${issue.key}`,
+        status: issue.fields.status.name as IssueStatus,
+        assignee: issue.fields.assignee?.displayName || "unassigned",
+        cr: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `CR for '${issue.fields.summary}'`)),
+        qa: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `QA for '${issue.fields.summary}'`)),
+    };
+    return result;
 }
 
 class TasksSvc {
