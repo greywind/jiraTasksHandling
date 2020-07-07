@@ -9,11 +9,16 @@ import (
 )
 
 func GetAllIssuesInTheCurrentSprint(resp http.ResponseWriter, req *http.Request) {
+	startAt := req.URL.Query().Get("startAt")
+
 	jiraReq, _ := http.NewRequest("GET", config.Get().JiraBaseUrl+"/search/", nil)
 	jiraReq.SetBasicAuth(config.Get().JiraUsername, config.Get().JiraPassword)
 
 	qs := jiraReq.URL.Query()
 	qs.Add("jql", "Sprint in openSprints() AND parent is EMPTY")
+	if startAt != "" {
+		qs.Add("startAt", startAt)
+	}
 
 	jiraReq.URL.RawQuery = qs.Encode()
 
