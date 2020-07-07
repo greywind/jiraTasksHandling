@@ -22,11 +22,7 @@ func GetAllIssuesInTheCurrentSprint(resp http.ResponseWriter, req *http.Request)
 
 	jiraReq.URL.RawQuery = qs.Encode()
 
-	client := http.DefaultClient
-
-	jiraResp, err := client.Do(jiraReq)
-
-	print(jiraReq.URL.String())
+	jiraResp, err := http.DefaultClient.Do(jiraReq)
 
 	if err != nil {
 		io.Copy(resp, strings.NewReader(err.Error()))
