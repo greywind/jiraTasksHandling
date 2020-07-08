@@ -24,7 +24,7 @@ function fixedColumnStyles(width = 100): JssStyle {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const styles = () => ({
-    numOrder: fixedColumnStyles(20),
+    numOrder: fixedColumnStyles(40),
     key: fixedColumnStyles(110),
     title: growingColumnStyles(300),
     assignee: fixedColumnStyles(160),

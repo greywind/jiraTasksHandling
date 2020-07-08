@@ -46,7 +46,7 @@ const IssueTable: FC<Props> = props => {
         <For each="issue" index="i" of={props.issues}>
             <Row key={issue.id} className={classes.tableRow}>
                 <div className={classes.numOrder}>
-                    {i}
+                    {i + 1}
                 </div>
                 <div className={classes.key}>
                     <KeyLink {...issue} />
