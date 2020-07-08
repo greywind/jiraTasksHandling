@@ -30,30 +30,30 @@ const FilterPanel: FC<Props> = props => {
 
     return <div className={classes.wrapper}>
         <Row>
-            <Col xs={4} className={classes.value}>
+            <Col xs={3} className={classes.value}>
                 <BoolInput placeholder="Show 'To Do'" value={props.filter.showToDo} onChangeForHook={onChangeBool("showToDo")} />
             </Col>
-            <Col xs={4} className={classes.value}>
+            <Col xs={3} className={classes.value}>
                 <BoolInput placeholder="Show 'On Hold'" value={props.filter.showOnHold} onChangeForHook={onChangeBool("showOnHold")} />
             </Col>
-            <Col xs={4} className={classes.value}>
+            <Col xs={3} className={classes.value}>
                 <BoolInput placeholder="Show 'In Progress'" value={props.filter.showInProgress} onChangeForHook={onChangeBool("showInProgress")} />
             </Col>
-            <Col xs={4} className={classes.value}>
+            <Col xs={3} className={classes.value}>
                 <BoolInput placeholder={"Show 'QA & CodeReview'"} value={props.filter.showQACR} onChangeForHook={onChangeBool("showQACR")} />
             </Col>
-            <Col xs={4} className={classes.value}>
+            <Col xs={3} className={classes.value}>
                 <BoolInput placeholder="Show 'Done'" value={props.filter.showDone} onChangeForHook={onChangeBool("showDone")} />
             </Col>
-            <Col xs={4} className={classes.value}>
+            <Col xs={3} className={classes.value}>
                 <BoolInput placeholder="Show 'Deployed'" value={props.filter.showDeployed} onChangeForHook={onChangeBool("showDeployed")} />
             </Col>
-            <Col xs={4} className={classes.value}>
+            <Col xs={3} className={classes.value}>
                 <BoolInput placeholder="Show 'Canceled'" value={props.filter.showCanceled} onChangeForHook={onChangeBool("showCanceled")} />
             </Col>
         </Row>
         <Row>
-            <Col xs={4} className={classes.value}>
+            <Col className={classes.value}>
                 <TextInput placeholder="Assignee" value={props.filter.assignee} onChangeForHook={onChangeString("assignee")} />
             </Col>
         </Row>
