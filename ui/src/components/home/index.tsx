@@ -1,3 +1,4 @@
+import FilterPanel, { Filter } from "@components/filterPanel";
 import IssueTable from "@components/issueTable";
 import { whyDidYouRender } from "@core/utils";
 import { TasksSvcContext } from "@services/servicesProvider";
@@ -13,6 +14,16 @@ const Home: React.FunctionComponent<Props> = () => {
     const [issues, setIssues] = useState<Issue[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const [filter, setFilter] = useState<Filter>({
+        showToDo: false,
+        showInProgress: false,
+        showOnHold: false,
+        showQACR: true,
+        showDone: true,
+        showDeployed: false,
+        assignee: "",
+    });
+
     useEffect(() => {
         (async () => {
             setIssues(await getAllIssuesInTheCurrentSprint());
@@ -24,7 +35,10 @@ const Home: React.FunctionComponent<Props> = () => {
     if (loading)
         return <Spinner className={classes.spinner} />;
 
-    return <IssueTable issues={issues} />;
+    return <>
+        <FilterPanel filter={filter} onChange={setFilter} />
+        <IssueTable issues={issues} />
+    </>;
 };
 whyDidYouRender(Home);
 
