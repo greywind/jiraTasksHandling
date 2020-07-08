@@ -1,20 +1,21 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Props } from "./meta";
+import IssueTable from "@components/issueTable";
 import { whyDidYouRender } from "@core/utils";
-import useStyles from "./styles";
 import { TasksSvcContext } from "@services/servicesProvider";
-import { Issue } from "src/models/task";
+import React, { useContext, useEffect, useState } from "react";
 import { Spinner } from "reactstrap";
+import { Issue } from "src/models/task";
+import { Props } from "./meta";
+import useStyles from "./styles";
 
 const Home: React.FunctionComponent<Props> = () => {
     const classes = useStyles();
     const { getAllIssuesInTheCurrentSprint } = useContext(TasksSvcContext);
-    const [tasks, setTasks] = useState<Issue[]>([]);
+    const [issues, setIssues] = useState<Issue[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         (async () => {
-            setTasks(await getAllIssuesInTheCurrentSprint());
+            setIssues(await getAllIssuesInTheCurrentSprint());
             setLoading(false);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -23,10 +24,7 @@ const Home: React.FunctionComponent<Props> = () => {
     if (loading)
         return <Spinner className={classes.spinner} />;
 
-    return <div className={classes.divClass}>
-        Hello, world!
-        {JSON.stringify(tasks)}
-    </div>;
+    return <IssueTable issues={issues} />;
 };
 whyDidYouRender(Home);
 
