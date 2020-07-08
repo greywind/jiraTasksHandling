@@ -1,0 +1,1 @@
+gin --port 8092 --appPort 8091 run main.go
