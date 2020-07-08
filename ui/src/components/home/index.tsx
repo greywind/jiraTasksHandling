@@ -53,10 +53,13 @@ const Home: React.FunctionComponent<Props> = () => {
     }, [filter, issues]);
 
     useEffect(() => {
-        (async () => {
+        const refreshIssues = async (): Promise<void> => {
             setIssues(await getAllIssuesInTheCurrentSprint());
             setLoading(false);
-        })();
+        };
+        const interval = setInterval(refreshIssues, 5 * 60 * 1000);
+        refreshIssues();
+        return () => clearInterval(interval);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
