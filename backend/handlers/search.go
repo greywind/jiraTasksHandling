@@ -18,6 +18,7 @@ func GetAllIssuesInTheCurrentSprint(resp http.ResponseWriter, req *http.Request)
 
 	qs := jiraReq.URL.Query()
 	qs.Add("jql", "Sprint in openSprints()")
+	qs.Add("fields", "summary,status,assignee,subtasks,issuetype")
 	if startAt != "" {
 		qs.Add("startAt", startAt)
 	}
