@@ -245,6 +245,7 @@ export interface Issue {
     link: string;
     assignee: string;
     status: IssueStatus,
+    subtask: boolean,
     cr?: Issue,
     qa?: Issue,
 }

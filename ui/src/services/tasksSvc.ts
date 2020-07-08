@@ -10,9 +10,20 @@ export interface SearchResponse {
     issues: IssueDto[];
 }
 
-function normalizeIssue(issue: IssueDto): Issue {
+function normalizeIssue(issue: IssueDto, _i: number, array: IssueDto[]): Issue {
     if (!issue)
         return undefined;
+    if (issue.fields.issuetype.subtask) {
+        return {
+            id: issue.id,
+            issueKey: issue.key,
+            title: issue.fields.summary,
+            link: `${configSvc.value.jiraTaskBaseUrl}${issue.key}`,
+            status: issue.fields.status.name as IssueStatus,
+            assignee: issue.fields.assignee?.displayName || array.find(i => i.id == issue.id).fields.assignee?.displayName || "unassigned",
+            subtask: issue.fields.issuetype.subtask,
+        };
+    }
     const result: Issue = {
         id: issue.id,
         issueKey: issue.key,
@@ -20,8 +31,9 @@ function normalizeIssue(issue: IssueDto): Issue {
         link: `${configSvc.value.jiraTaskBaseUrl}${issue.key}`,
         status: issue.fields.status.name as IssueStatus,
         assignee: issue.fields.assignee?.displayName || "unassigned",
-        cr: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `CR for '${issue.fields.summary}'`)),
-        qa: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `QA for '${issue.fields.summary}'`)),
+        subtask: issue.fields.issuetype.subtask,
+        cr: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `CR for '${issue.fields.summary}'`), _i, array),
+        qa: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `QA for '${issue.fields.summary}'`), _i, array),
     };
     return result;
 }
@@ -38,7 +50,7 @@ class TasksSvc {
             startAt += response.maxResults;
         }
 
-        const result = issuesDto.map(normalizeIssue);
+        const result = issuesDto.map(normalizeIssue).filter(i => !i.subtask);
         return result;
     }
 }

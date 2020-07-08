@@ -17,7 +17,7 @@ func GetAllIssuesInTheCurrentSprint(resp http.ResponseWriter, req *http.Request)
 	jiraReq.SetBasicAuth(config.Get().JiraUsername, config.Get().JiraPassword)
 
 	qs := jiraReq.URL.Query()
-	qs.Add("jql", "Sprint in openSprints() AND parent is EMPTY")
+	qs.Add("jql", "Sprint in openSprints()")
 	if startAt != "" {
 		qs.Add("startAt", startAt)
 	}
