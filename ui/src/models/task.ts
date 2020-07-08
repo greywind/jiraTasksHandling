@@ -233,7 +233,7 @@ export type IssueStatus =
     "To Do" |
     "On Hold" |
     "In Progress" |
-    "QA & CodeReview" |
+    "QA & Code Review" |
     "Done" |
     "Deployed" |
     "Canceled"

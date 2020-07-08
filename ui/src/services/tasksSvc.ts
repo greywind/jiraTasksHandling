@@ -1,6 +1,6 @@
-import { Issue, IssueDto, IssueStatus, StatusDto } from "src/models/task";
-import wget from "@core/wget";
 import configSvc from "@core/services/configSvc";
+import wget from "@core/wget";
+import { Issue, IssueDto, IssueStatus } from "src/models/task";
 
 export interface SearchResponse {
     expand: string;
