@@ -10,7 +10,7 @@ export interface SearchResponse {
     issues: IssueDto[];
 }
 
-function normalizeIssue(issue: IssueDto, _i: number, array: IssueDto[]): Issue {
+function normalizeIssue(issue: IssueDto, i = 0, array: IssueDto[] = []): Issue {
     if (!issue)
         return undefined;
     if (issue.fields.issuetype.subtask) {
@@ -32,8 +32,8 @@ function normalizeIssue(issue: IssueDto, _i: number, array: IssueDto[]): Issue {
         status: issue.fields.status.name as IssueStatus,
         assignee: issue.fields.assignee?.displayName || "unassigned",
         subtask: issue.fields.issuetype.subtask,
-        cr: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `CR for '${issue.fields.summary}'`), _i, array),
-        qa: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `QA for '${issue.fields.summary}'`), _i, array),
+        cr: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `CR for '${issue.fields.summary}'`), i, array),
+        qa: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `QA for '${issue.fields.summary}'`), i, array),
     };
     return result;
 }
@@ -52,6 +52,10 @@ class TasksSvc {
 
         const result = issuesDto.map(normalizeIssue).filter(i => !i.subtask);
         return result;
+    }
+    public async createQASubtask(issue: Issue): Promise<Issue> {
+        const issueDto = await wget.post<IssueDto>("createQASubtask", issue);
+        return normalizeIssue(issueDto);
     }
 }
 
