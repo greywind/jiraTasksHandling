@@ -118,13 +118,13 @@ class Wget {
     public get<T>(action: string, opt?: any): Promise<T> {
         return this.request("GET", action, null, opt);
     }
-    public delete(action: string, body?: any, opt?: any): Promise<any> {
+    public delete<T>(action: string, body?: any, opt?: any): Promise<T> {
         return this.request("DELETE", action, body, opt);
     }
-    public post(action: string, body: any, opt?: any): Promise<any> {
+    public post<T>(action: string, body: any, opt?: any): Promise<T> {
         return this.request("POST", action, body, opt);
     }
-    public put(action: string, body: any, opt?: any): Promise<any> {
+    public put<T>(action: string, body: any, opt?: any): Promise<T> {
         return this.request("PUT", action, body, opt);
     }
 }
