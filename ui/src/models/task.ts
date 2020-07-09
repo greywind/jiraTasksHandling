@@ -241,7 +241,7 @@ export type IssueStatus =
 export interface Issue {
     id: string;
     issueKey: string;
-    title: string;
+    summary: string;
     link: string;
     assignee: string;
     status: IssueStatus,

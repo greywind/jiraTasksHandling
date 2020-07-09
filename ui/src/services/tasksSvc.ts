@@ -17,7 +17,7 @@ function normalizeIssue(issue: IssueDto, _i: number, array: IssueDto[]): Issue {
         return {
             id: issue.id,
             issueKey: issue.key,
-            title: issue.fields.summary,
+            summary: issue.fields.summary,
             link: `${configSvc.value.jiraTaskBaseUrl}${issue.key}`,
             status: issue.fields.status.name as IssueStatus,
             assignee: issue.fields.assignee?.displayName || array.find(i => i.id == issue.id).fields.assignee?.displayName || "unassigned",
@@ -27,7 +27,7 @@ function normalizeIssue(issue: IssueDto, _i: number, array: IssueDto[]): Issue {
     const result: Issue = {
         id: issue.id,
         issueKey: issue.key,
-        title: issue.fields.summary,
+        summary: issue.fields.summary,
         link: `${configSvc.value.jiraTaskBaseUrl}${issue.key}`,
         status: issue.fields.status.name as IssueStatus,
         assignee: issue.fields.assignee?.displayName || "unassigned",

@@ -52,7 +52,7 @@ const IssueTable: FC<Props> = props => {
                     <KeyLink {...issue} />
                 </div>
                 <div className={classnames(classes.title, classes.alignedToTheLeft)}>
-                    {issue.title}
+                    {issue.summary}
                 </div>
                 <div className={classes.assignee}>
                     {issue.assignee}
