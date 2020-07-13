@@ -9,8 +9,6 @@ import (
 )
 
 func GetAllIssuesInTheCurrentSprint(resp http.ResponseWriter, req *http.Request) {
-	println("start: GetAllIssuesInTheCurrentSprint")
-	defer print("end: GetAllIssuesInTheCurrentSprint")
 	startAt := req.URL.Query().Get("startAt")
 
 	jiraReq, _ := http.NewRequest("GET", config.Get().JiraBaseUrl+"/search/", nil)
