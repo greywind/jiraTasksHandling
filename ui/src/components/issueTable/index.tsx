@@ -1,9 +1,11 @@
-import { For, If } from "@core/types";
+import { Choose, For, If, Otherwise, When } from "@core/types";
+import tasksSvc from "@services/tasksSvc";
 import classnames from "classnames";
-import React, { FC } from "react";
-import { Row } from "reactstrap";
+import React, { FC, useCallback } from "react";
+import { Button, Row } from "reactstrap";
 import { Issue } from "src/models/task";
 import useStyles from "./styles";
+import { useForceRerender } from "@core/hooks";
 
 declare const issue: Issue;
 declare const i: number;
@@ -17,6 +19,15 @@ const KeyLink: FC<Issue> = issue => <a href={issue.link}>
 </a>;
 
 const IssueTable: FC<Props> = props => {
+    const forceRerender = useForceRerender();
+
+    const createQASubtask = useCallback(async (issue: Issue): Promise<void> => {
+        if (issue.qa)
+            return;
+        const qa = await tasksSvc.createQASubtask(issue);
+        issue.qa = qa;
+        forceRerender();
+    }, [forceRerender]);
     const classes = useStyles(props);
 
     return <>
@@ -72,15 +83,20 @@ const IssueTable: FC<Props> = props => {
                     </If>
                 </div>
                 <div className={classes.qa}>
-                    <If condition={!!issue.qa}>
-                        <KeyLink {...issue.qa} />
-                        <div>
-                            {issue.qa.assignee}
-                        </div>
-                        <div>
-                            {issue.qa.status}
-                        </div>
-                    </If>
+                    <Choose>
+                        <When condition={!!issue.qa}>
+                            <KeyLink {...issue.qa} />
+                            <div>
+                                {issue.qa.assignee}
+                            </div>
+                            <div>
+                                {issue.qa.status}
+                            </div>
+                        </When>
+                        <Otherwise>
+                            <Button onClick={() => createQASubtask(issue)}>Create QA</Button>
+                        </Otherwise>
+                    </Choose>
                 </div>
             </Row>
         </For>

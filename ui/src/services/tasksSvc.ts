@@ -20,7 +20,7 @@ function normalizeIssue(issue: IssueDto, i = 0, array: IssueDto[] = []): Issue {
             summary: issue.fields.summary,
             link: `${configSvc.value.jiraTaskBaseUrl}${issue.key}`,
             status: issue.fields.status.name as IssueStatus,
-            assignee: issue.fields.assignee?.displayName || array.find(i => i.id == issue.id).fields.assignee?.displayName || "unassigned",
+            assignee: issue.fields.assignee?.displayName || array.find(i => i.id == issue.id)?.fields?.assignee?.displayName || "unassigned",
             subtask: issue.fields.issuetype.subtask,
         };
     }

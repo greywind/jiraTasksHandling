@@ -8,5 +8,6 @@ import (
 
 func main() {
 	http.HandleFunc("/getAllIssuesInTheCurrentSprint", handlers.GetAllIssuesInTheCurrentSprint)
+	http.HandleFunc("/createQASubtask", handlers.CreateQASubtask)
 	http.ListenAndServe(":8091", nil)
 }

@@ -173,3 +173,9 @@ export function useToggle(defaultValue: boolean): UseToggleResult {
     const toggle = useCallback(() => setValue(!value), [value]);
     return [value, toggle, setValue];
 }
+
+type UseForceRerenderResult = () => void;
+export function useForceRerender(): UseForceRerenderResult {
+    const [counter, setCounter] = useState(0);
+    return useCallback(() => setCounter(counter + 1), [counter]);
+}
