@@ -3,7 +3,6 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -12,19 +11,9 @@ import (
 	"github.com/greywind/jiraTasksHandling/config"
 )
 
-type JiraError struct {
-	errorMessages []string
-	errors        map[string]string
-}
-
 type Issue struct {
 	Id      string
 	Summary string
-}
-
-type Subtask struct {
-	ParentId string
-	Summary  string
 }
 
 func CreateQASubtask(resp http.ResponseWriter, req *http.Request) {
@@ -36,23 +25,21 @@ func CreateQASubtask(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var issue Issue
+	var parentIssue Issue
 	bodyString, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		http.Error(resp, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = json.Unmarshal(bodyString, &issue)
+	err = json.Unmarshal(bodyString, &parentIssue)
 	if err != nil {
 		http.Error(resp, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	qa := Subtask{ParentId: issue.Id, Summary: fmt.Sprintf("QA for '%v'", issue.Summary)}
-
 	bodyTemplate := template.Must(template.New("body").Parse(createQASubtaskBodyStr))
 	var buf bytes.Buffer
-	bodyTemplate.Execute(&buf, qa)
+	bodyTemplate.Execute(&buf, parentIssue)
 
 	jiraReq, _ := http.NewRequest("POST", config.Get().JiraBaseUrl+"/issue/", &buf)
 	jiraReq.Header.Add("Content-Type", "application/json")
@@ -106,12 +93,12 @@ const createQASubtaskBodyStr = `
 		"project": {
 			"id": 10006
 		},
-		"summary": "{{.Summary}}",
+		"summary": "QA for '{{.Summary}}'",
 		"issuetype": {
 			"id": 10006
 		},
 		"parent": {
-			"id": "{{.ParentId}}"
+			"id": "{{.Id}}"
 		}
 	}
 }
