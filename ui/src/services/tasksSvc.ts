@@ -1,6 +1,7 @@
 import configSvc from "@core/services/configSvc";
 import wget from "@core/wget";
 import { Issue, IssueDto, IssueStatus } from "src/models/task";
+import { User, UserDto } from "src/models/user";
 
 export interface SearchResponse {
     expand: string;
@@ -38,6 +39,13 @@ function normalizeIssue(issue: IssueDto, i = 0, array: IssueDto[] = []): Issue {
     return result;
 }
 
+function normalizeUser(user: UserDto): User {
+    return {
+        displayName: user.displayName,
+        avatar: user.avatarUrls["16x16"],
+    };
+}
+
 class TasksSvc {
     public async getAllIssuesInTheCurrentSprint(): Promise<Issue[]> {
         const issuesDto: IssueDto[] = [];
@@ -60,6 +68,10 @@ class TasksSvc {
     public async createCRSubtask(issue: Issue): Promise<Issue> {
         const issueDto = await wget.post<IssueDto>("createCRSubtask", issue);
         return normalizeIssue(issueDto);
+    }
+    public async getAllUsers(): Promise<User[]> {
+        const usersDto = await wget.get<UserDto[]>("getAllAssignees");
+        return usersDto.map(normalizeUser);
     }
 }
 

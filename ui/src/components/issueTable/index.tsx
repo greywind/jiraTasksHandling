@@ -1,17 +1,19 @@
-import { Choose, For, If, Otherwise, When } from "@core/types";
+import { useForceRerender } from "@core/hooks";
+import { Choose, For, Otherwise, When } from "@core/types";
 import tasksSvc from "@services/tasksSvc";
 import classnames from "classnames";
 import React, { FC, useCallback } from "react";
 import { Button, Row } from "reactstrap";
 import { Issue } from "src/models/task";
+import { User } from "src/models/user";
 import useStyles from "./styles";
-import { useForceRerender } from "@core/hooks";
 
 declare const issue: Issue;
 declare const i: number;
 
 export interface Props {
     issues: Issue[];
+    users: User[];
 }
 
 const KeyLink: FC<Issue> = issue => <a href={issue.link}>

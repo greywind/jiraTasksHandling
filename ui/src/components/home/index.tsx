@@ -2,16 +2,18 @@ import FilterPanel, { Filter } from "@components/filterPanel";
 import IssueTable from "@components/issueTable";
 import { whyDidYouRender } from "@core/utils";
 import { TasksSvcContext } from "@services/servicesProvider";
-import React, { useContext, useEffect, useState, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Spinner } from "reactstrap";
 import { Issue } from "src/models/task";
+import { User } from "src/models/user";
 import { Props } from "./meta";
 import useStyles from "./styles";
 
 const Home: React.FunctionComponent<Props> = () => {
     const classes = useStyles();
-    const { getAllIssuesInTheCurrentSprint } = useContext(TasksSvcContext);
+    const { getAllIssuesInTheCurrentSprint, getAllUsers } = useContext(TasksSvcContext);
     const [issues, setIssues] = useState<Issue[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [filter, setFilter] = useState<Filter>({
@@ -62,13 +64,18 @@ const Home: React.FunctionComponent<Props> = () => {
         return () => clearInterval(interval);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    useEffect(() => {
+        (async () => {
+            setUsers(await getAllUsers());
+        })();
+    }, [getAllUsers]);
 
     if (loading)
         return <Spinner className={classes.spinner} />;
 
     return <>
         <FilterPanel filter={filter} onChange={setFilter} />
-        <IssueTable issues={filteredIssues} />
+        <IssueTable issues={filteredIssues} users={users} />
     </>;
 };
 whyDidYouRender(Home);
