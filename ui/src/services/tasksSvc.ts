@@ -57,6 +57,10 @@ class TasksSvc {
         const issueDto = await wget.post<IssueDto>("createQASubtask", issue);
         return normalizeIssue(issueDto);
     }
+    public async createCRSubtask(issue: Issue): Promise<Issue> {
+        const issueDto = await wget.post<IssueDto>("createCRSubtask", issue);
+        return normalizeIssue(issueDto);
+    }
 }
 
 export default new TasksSvc();

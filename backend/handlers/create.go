@@ -17,6 +17,14 @@ type Issue struct {
 }
 
 func CreateQASubtask(resp http.ResponseWriter, req *http.Request) {
+	createSubtask(resp, req, createQASubtaskBodyStr)
+}
+
+func CreateCRSubtask(resp http.ResponseWriter, req *http.Request) {
+	createSubtask(resp, req, createCRSubtaskBodyStr)
+}
+
+func createSubtask(resp http.ResponseWriter, req *http.Request, createSubtaskBodyStr string) {
 	resp.Header().Set("Access-Control-Allow-Origin", config.Get().UiUrl)
 	resp.Header().Set("Access-Control-Allow-Credentials", "true")
 	resp.Header().Set("Access-Control-Allow-Headers", "Accept,Content-Type")
@@ -37,7 +45,7 @@ func CreateQASubtask(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	bodyTemplate := template.Must(template.New("body").Parse(createQASubtaskBodyStr))
+	bodyTemplate := template.Must(template.New("body").Parse(createSubtaskBodyStr))
 	var buf bytes.Buffer
 	bodyTemplate.Execute(&buf, parentIssue)
 
@@ -96,6 +104,23 @@ const createQASubtaskBodyStr = `
 		"summary": "QA for '{{.Summary}}'",
 		"issuetype": {
 			"id": 10006
+		},
+		"parent": {
+			"id": "{{.Id}}"
+		}
+	}
+}
+`
+
+const createCRSubtaskBodyStr = `
+{
+	"fields": {
+		"project": {
+			"id": 10006
+		},
+		"summary": "CR for '{{.Summary}}'",
+		"issuetype": {
+			"id": 10002
 		},
 		"parent": {
 			"id": "{{.Id}}"

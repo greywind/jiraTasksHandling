@@ -28,6 +28,13 @@ const IssueTable: FC<Props> = props => {
         issue.qa = qa;
         forceRerender();
     }, [forceRerender]);
+    const createCRSubtask = useCallback(async (issue: Issue): Promise<void> => {
+        if (issue.cr)
+            return;
+        const cr = await tasksSvc.createCRSubtask(issue);
+        issue.cr = cr;
+        forceRerender();
+    }, [forceRerender]);
     const classes = useStyles(props);
 
     return <>
@@ -72,15 +79,20 @@ const IssueTable: FC<Props> = props => {
                     {issue.status}
                 </div>
                 <div className={classes.cr}>
-                    <If condition={!!issue.cr}>
-                        <KeyLink {...issue.cr} />
-                        <div>
-                            {issue.cr.assignee}
-                        </div>
-                        <div>
-                            {issue.cr.status}
-                        </div>
-                    </If>
+                    <Choose>
+                        <When condition={!!issue.cr}>
+                            <KeyLink {...issue.cr} />
+                            <div>
+                                {issue.cr.assignee}
+                            </div>
+                            <div>
+                                {issue.cr.status}
+                            </div>
+                        </When>
+                        <Otherwise>
+                            <Button onClick={() => createCRSubtask(issue)}>Create CR</Button>
+                        </Otherwise>
+                    </Choose>
                 </div>
                 <div className={classes.qa}>
                     <Choose>
