@@ -1,8 +1,8 @@
 import { useForceRerender } from "@core/hooks";
 import { Choose, For, Otherwise, When } from "@core/types";
-import tasksSvc from "@services/tasksSvc";
+import { TasksSvcContext } from "@services/servicesProvider";
 import classnames from "classnames";
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useContext } from "react";
 import { Button, Row } from "reactstrap";
 import { Issue } from "src/models/task";
 import { User } from "src/models/user";
@@ -22,21 +22,22 @@ const KeyLink: FC<Issue> = issue => <a href={issue.link}>
 
 const IssueTable: FC<Props> = props => {
     const forceRerender = useForceRerender();
+    const { createQASubtask, createCRSubtask } = useContext(TasksSvcContext);
 
-    const createQASubtask = useCallback(async (issue: Issue): Promise<void> => {
+    const _createQASubtask = useCallback(async (issue: Issue): Promise<void> => {
         if (issue.qa)
             return;
-        const qa = await tasksSvc.createQASubtask(issue);
+        const qa = await createQASubtask(issue);
         issue.qa = qa;
         forceRerender();
-    }, [forceRerender]);
-    const createCRSubtask = useCallback(async (issue: Issue): Promise<void> => {
+    }, [createQASubtask, forceRerender]);
+    const _createCRSubtask = useCallback(async (issue: Issue): Promise<void> => {
         if (issue.cr)
             return;
-        const cr = await tasksSvc.createCRSubtask(issue);
+        const cr = await createCRSubtask(issue);
         issue.cr = cr;
         forceRerender();
-    }, [forceRerender]);
+    }, [createCRSubtask, forceRerender]);
     const classes = useStyles(props);
 
     return <>
@@ -92,7 +93,7 @@ const IssueTable: FC<Props> = props => {
                             </div>
                         </When>
                         <Otherwise>
-                            <Button onClick={() => createCRSubtask(issue)}>Create CR</Button>
+                            <Button onClick={() => _createCRSubtask(issue)}>Create CR</Button>
                         </Otherwise>
                     </Choose>
                 </div>
@@ -108,7 +109,7 @@ const IssueTable: FC<Props> = props => {
                             </div>
                         </When>
                         <Otherwise>
-                            <Button onClick={() => createQASubtask(issue)}>Create QA</Button>
+                            <Button onClick={() => _createQASubtask(issue)}>Create QA</Button>
                         </Otherwise>
                     </Choose>
                 </div>
