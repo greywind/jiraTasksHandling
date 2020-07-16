@@ -4,15 +4,15 @@ import React, { FC, ReactNode, useRef, useState } from "react";
 import { useOnClickOutside } from "use-hooks";
 import useStyles, { StyleProps } from "./styles";
 
-declare const item: Item;
+declare const item: PopupSelectionItem;
 
-interface Item {
+export interface PopupSelectionItem {
     value: string;
     label: ReactNode;
 }
 interface Props {
     value: string;
-    items: Item[];
+    items: PopupSelectionItem[];
     onChange: (value: string) => void;
 }
 

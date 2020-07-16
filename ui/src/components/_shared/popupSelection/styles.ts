@@ -34,6 +34,9 @@ const styles = {
         backgroundColor: "#ddf",
     },
     item: {
+        "&:not(first-child)": {
+            marginTop: 3,
+        },
         "&:hover:not($selected)": {
             backgroundColor: "#eef",
         },
