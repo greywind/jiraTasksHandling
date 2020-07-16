@@ -43,6 +43,7 @@ const styles = () => ({
     },
     tableRow: {
         minHeight: 80,
+        flexWrap: "nowrap",
         "&:nth-child(2n)": {
             background: "#e8eced",
         },

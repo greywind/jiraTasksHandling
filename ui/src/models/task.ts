@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export interface IssuetypeDto {
     self: string;
     id: string;
@@ -243,7 +245,7 @@ export interface Issue {
     issueKey: string;
     summary: string;
     link: string;
-    assignee: string;
+    assignee: User;
     status: IssueStatus,
     subtask: boolean,
     cr?: Issue,

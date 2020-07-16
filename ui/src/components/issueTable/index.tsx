@@ -1,6 +1,7 @@
 import { useForceRerender } from "@core/hooks";
 import { Choose, For, Otherwise, When } from "@core/types";
 import { TasksSvcContext } from "@services/servicesProvider";
+import UserName from "@shared/userName";
 import classnames from "classnames";
 import React, { FC, useCallback, useContext } from "react";
 import { Button, Row } from "reactstrap";
@@ -76,7 +77,7 @@ const IssueTable: FC<Props> = props => {
                     {issue.summary}
                 </div>
                 <div className={classes.assignee}>
-                    {issue.assignee}
+                    <UserName user={issue.assignee} />
                 </div>
                 <div className={classes.status}>
                     {issue.status}
@@ -86,7 +87,7 @@ const IssueTable: FC<Props> = props => {
                         <When condition={!!issue.cr}>
                             <KeyLink {...issue.cr} />
                             <div>
-                                {issue.cr.assignee}
+                                <UserName user={issue.cr.assignee} />
                             </div>
                             <div>
                                 {issue.cr.status}
@@ -102,7 +103,7 @@ const IssueTable: FC<Props> = props => {
                         <When condition={!!issue.qa}>
                             <KeyLink {...issue.qa} />
                             <div>
-                                {issue.qa.assignee}
+                                <UserName user={issue.qa.assignee} />
                             </div>
                             <div>
                                 {issue.qa.status}

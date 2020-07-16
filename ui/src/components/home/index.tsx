@@ -46,9 +46,9 @@ const Home: React.FunctionComponent<Props> = () => {
         if (filter.assignee) {
             const lowercasedAssignee = filter.assignee.toLowerCase();
             result = result.filter(i =>
-                i.assignee.toLowerCase().includes(lowercasedAssignee) ||
-                i.cr?.assignee?.toLowerCase().includes(lowercasedAssignee) ||
-                i.qa?.assignee.toLowerCase().includes(lowercasedAssignee)
+                i.assignee.displayName.toLowerCase().includes(lowercasedAssignee) ||
+                i.cr?.assignee?.displayName?.toLowerCase().includes(lowercasedAssignee) ||
+                i.qa?.assignee?.displayName?.toLowerCase().includes(lowercasedAssignee)
             );
         }
         return result;
