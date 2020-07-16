@@ -8,7 +8,7 @@ const styles = {
         fontSize: 14,
     },
     image: {
-        flex: "0 0 16px",
+        width: 16,
         marginRight: 10,
         borderRadius: "50%",
     },

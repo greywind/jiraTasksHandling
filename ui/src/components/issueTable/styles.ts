@@ -48,6 +48,9 @@ const styles = () => ({
             background: "#e8eced",
         },
     },
+    subtaskAssignee: {
+        alignSelf: "stretch",
+    },
 });
 type Names = keyof ReturnType<typeof styles>;
 
