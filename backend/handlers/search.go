@@ -8,6 +8,8 @@ import (
 	"github.com/greywind/jiraTasksHandling/config"
 )
 
+// GetAllIssuesInTheCurrentSprint returns all tasks that are included to the current sprint.
+// You can pass `startAt` parameter via query string for pagination
 func GetAllIssuesInTheCurrentSprint(resp http.ResponseWriter, req *http.Request) {
 	resp.Header().Set("Access-Control-Allow-Origin", config.Get().UiUrl)
 	resp.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -40,6 +42,7 @@ func GetAllIssuesInTheCurrentSprint(resp http.ResponseWriter, req *http.Request)
 	io.Copy(resp, jiraResp.Body)
 }
 
+//GetAllAssignees returns a list of all users available to be assigned to a task
 func GetAllAssignees(resp http.ResponseWriter, req *http.Request) {
 	resp.Header().Set("Access-Control-Allow-Origin", config.Get().UiUrl)
 	resp.Header().Set("Access-Control-Allow-Credentials", "true")

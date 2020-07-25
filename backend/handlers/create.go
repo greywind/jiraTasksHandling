@@ -11,15 +11,27 @@ import (
 	"github.com/greywind/jiraTasksHandling/config"
 )
 
-type Issue struct {
-	Id      string
+type issue struct {
+	ID      string
 	Summary string
 }
 
+// CreateQASubtask creates a QA subtask for issue passed via body in form of:
+// 	{
+// 		ID      string,
+// 		Summary string
+// 	}
+// The summary for a new task will be the summary of parent task prefixed with "QA for"
 func CreateQASubtask(resp http.ResponseWriter, req *http.Request) {
 	createSubtask(resp, req, createQASubtaskBodyStr)
 }
 
+// CreateCRSubtask creates a code review subtask for issue passed via body in form of:
+// 	{
+// 		ID      string,
+// 		Summary string
+// 	}
+// The summary for a new task will be the summary of parent task prefixed with "CR for"
 func CreateCRSubtask(resp http.ResponseWriter, req *http.Request) {
 	createSubtask(resp, req, createCRSubtaskBodyStr)
 }
@@ -33,7 +45,7 @@ func createSubtask(resp http.ResponseWriter, req *http.Request, createSubtaskBod
 		return
 	}
 
-	var parentIssue Issue
+	var parentIssue issue
 	bodyString, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		http.Error(resp, err.Error(), http.StatusBadRequest)
