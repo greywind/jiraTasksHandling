@@ -24,7 +24,7 @@ const KeyLink: FC<Issue> = issue => <a href={issue.link}>
 
 const IssueTable: FC<Props> = props => {
     const forceRerender = useForceRerender();
-    const { createQASubtask, createCRSubtask } = useContext(TasksSvcContext);
+    const { createQASubtask, createCRSubtask, assignUser } = useContext(TasksSvcContext);
 
     const _createQASubtask = useCallback(async (issue: Issue): Promise<void> => {
         if (issue.qa)
@@ -40,7 +40,13 @@ const IssueTable: FC<Props> = props => {
         issue.cr = cr;
         forceRerender();
     }, [createCRSubtask, forceRerender]);
+    const _assignUser = useCallback(async (issue: Issue, user: User) => {
+        await assignUser(issue, user.displayName);
+        issue.assignee = user;
+        forceRerender();
+    }, []);
     const classes = useStyles(props);
+
 
     return <>
         <Row className={classes.headerRow}>
@@ -88,7 +94,7 @@ const IssueTable: FC<Props> = props => {
                         <When condition={!!issue.cr}>
                             <KeyLink {...issue.cr} />
                             <div className={classes.subtaskAssignee}>
-                                <UserSelection user={issue.cr.assignee} availableUsers={props.users} onChange={user => { issue.cr.assignee = user; forceRerender(); }} />
+                                <UserSelection user={issue.cr.assignee} availableUsers={props.users} onChange={user => { _assignUser(issue.cr, user);}} />
                             </div>
                             <div>
                                 {issue.cr.status}
@@ -104,7 +110,7 @@ const IssueTable: FC<Props> = props => {
                         <When condition={!!issue.qa}>
                             <KeyLink {...issue.qa} />
                             <div className={classes.subtaskAssignee}>
-                                <UserSelection user={issue.qa.assignee} availableUsers={props.users} onChange={user => { issue.qa.assignee = user; forceRerender(); }} />
+                                <UserSelection user={issue.qa.assignee} availableUsers={props.users} onChange={user => { _assignUser(issue.qa, user); }} />
                             </div>
                             <div>
                                 {issue.qa.status}

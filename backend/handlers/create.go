@@ -59,7 +59,11 @@ func createSubtask(resp http.ResponseWriter, req *http.Request, createSubtaskBod
 
 	bodyTemplate := template.Must(template.New("body").Parse(createSubtaskBodyStr))
 	var buf bytes.Buffer
-	bodyTemplate.Execute(&buf, parentIssue)
+	err = bodyTemplate.Execute(&buf, parentIssue)
+	if err != nil {
+		http.Error(resp, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	jiraReq, _ := http.NewRequest("POST", config.Get().JiraBaseUrl+"/issue/", &buf)
 	jiraReq.Header.Add("Content-Type", "application/json")
@@ -87,7 +91,6 @@ func createSubtask(resp http.ResponseWriter, req *http.Request, createSubtaskBod
 	err = json.Unmarshal(bodyString, &parsedJiraResp)
 
 	createdIssueLink := parsedJiraResp["self"]
-	print(createdIssueLink)
 
 	jiraReq, _ = http.NewRequest("GET", createdIssueLink, nil)
 	jiraReq.SetBasicAuth(config.Get().JiraUsername, config.Get().JiraPassword)
@@ -118,7 +121,7 @@ const createQASubtaskBodyStr = `
 			"id": 10006
 		},
 		"parent": {
-			"id": "{{.Id}}"
+			"id": "{{.ID}}"
 		}
 	}
 }
@@ -135,7 +138,7 @@ const createCRSubtaskBodyStr = `
 			"id": 10002
 		},
 		"parent": {
-			"id": "{{.Id}}"
+			"id": "{{.ID}}"
 		}
 	}
 }

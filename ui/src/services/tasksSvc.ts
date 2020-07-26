@@ -76,6 +76,9 @@ class TasksSvc {
         const usersDto = await wget.get<UserDto[]>("getAllAssignees");
         return usersDto.map(normalizeUser);
     }
+    public async assignUser(issue: Issue, assignee: string): Promise<void> {
+        await wget.put("assignee", { issueId: issue.id, assignee});
+    }
 }
 
 export default new TasksSvc();

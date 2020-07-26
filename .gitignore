@@ -6,3 +6,4 @@ webpack.config.variables.js
 built/
 coverage/
 config.json
+backend/gin-bin.exe
