@@ -18,6 +18,7 @@ export interface UserDto {
 }
 
 export interface User {
+    accountId: string;
     displayName: string;
     avatar: string;
 }

@@ -11,6 +11,8 @@ export interface SearchResponse {
     issues: IssueDto[];
 }
 
+export const unassignedUser: User = { accountId: null, avatar: "", displayName: "unassigned" };
+
 function normalizeIssue(issue: IssueDto, i = 0, array: IssueDto[] = []): Issue {
     if (!issue)
         return undefined;
@@ -21,7 +23,7 @@ function normalizeIssue(issue: IssueDto, i = 0, array: IssueDto[] = []): Issue {
             summary: issue.fields.summary,
             link: `${configSvc.value.jiraTaskBaseUrl}${issue.key}`,
             status: issue.fields.status.name as IssueStatus,
-            assignee: normalizeUser(issue.fields.assignee || array.find(i => i.id == issue.id)?.fields?.assignee) || { avatar: "", displayName: "unassigned" },
+            assignee: normalizeUser(issue.fields.assignee || array.find(i => i.id == issue.id)?.fields?.assignee) || unassignedUser,
             subtask: issue.fields.issuetype.subtask,
         };
     }
@@ -31,7 +33,7 @@ function normalizeIssue(issue: IssueDto, i = 0, array: IssueDto[] = []): Issue {
         summary: issue.fields.summary,
         link: `${configSvc.value.jiraTaskBaseUrl}${issue.key}`,
         status: issue.fields.status.name as IssueStatus,
-        assignee: normalizeUser(issue.fields.assignee) || { avatar: "", displayName: "unassigned" },
+        assignee: normalizeUser(issue.fields.assignee) || unassignedUser,
         subtask: issue.fields.issuetype.subtask,
         cr: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `CR for '${issue.fields.summary}'`), i, array),
         qa: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary == `QA for '${issue.fields.summary}'`), i, array),
@@ -39,11 +41,12 @@ function normalizeIssue(issue: IssueDto, i = 0, array: IssueDto[] = []): Issue {
     return result;
 }
 
-function normalizeUser(user: Pick<UserDto, "displayName" | "avatarUrls">): User {
+function normalizeUser(user: Pick<UserDto, "accountId" | "displayName" | "avatarUrls">): User {
     if (!user)
         return undefined;
 
     return {
+        accountId: user.accountId,
         displayName: user.displayName,
         avatar: user.avatarUrls["16x16"],
     };
@@ -75,6 +78,9 @@ class TasksSvc {
     public async getAllUsers(): Promise<User[]> {
         const usersDto = await wget.get<UserDto[]>("getAllAssignees");
         return usersDto.map(normalizeUser);
+    }
+    public async assignUser(issue: Issue, assignee: string): Promise<void> {
+        await wget.put("assignee", { issueId: issue.id, assignee });
     }
 }
 
