@@ -1,7 +1,7 @@
 import { For } from "@core/types";
 import classnames from "classnames";
-import React, { FC, ReactNode, useRef, useState } from "react";
-import { useOnClickOutside } from "use-hooks";
+import React, { FC, ReactNode, useEffect, useRef, useState } from "react";
+import { useOnClickOutside, useWindowSize } from "use-hooks";
 import useStyles, { StyleProps } from "./styles";
 
 declare const item: PopupSelectionItem;
@@ -21,15 +21,26 @@ const PopupSelection: FC<Props> = props => {
     const labelRef = useRef<HTMLDivElement>();
     const popupRef = useRef<HTMLDivElement>();
 
-    const styleProps: StyleProps = { showPopup };
+    const [styleProps, setStyleProps] = useState<StyleProps>({ showPopup });
+    const ws = useWindowSize();
 
-    if (styleProps.showPopup && labelRef.current) {
-        const rect = labelRef.current.getBoundingClientRect();
-        styleProps.left = rect.left;
-        styleProps.width = rect.width;
-        styleProps.top = rect.top;
-    }
-
+    useEffect(() => {
+        if (!popupRef.current || !labelRef.current || !showPopup) {
+            setStyleProps({ showPopup: false });
+            return;
+        }
+        const labelRect = labelRef.current.getBoundingClientRect();
+        popupRef.current.style.display = "flex";
+        const popupRect = popupRef.current.getBoundingClientRect();
+        popupRef.current.style.display = "";
+        const _styleProps: StyleProps = {
+            showPopup: true,
+            left: labelRect.left,
+            width: labelRect.width,
+            top: Math.min(labelRect.top, ws.height - popupRect.height - 20),
+        };
+        setStyleProps(_styleProps);
+    }, [showPopup, ws.height]);
     const classes = useStyles(styleProps);
     useOnClickOutside(popupRef, () => setShowPopup(false));
 
