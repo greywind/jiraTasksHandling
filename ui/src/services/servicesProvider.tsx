@@ -13,6 +13,7 @@ export const TasksSvcContext = React.createContext<typeof tasksSvc>({
     createQASubtask: async () => ({} as unknown as Issue),
     createCRSubtask: async () => ({} as unknown as Issue),
     getAllUsers: async () => [],
+    assignUser: async () => undefined,
 });
 
 const ServicesProvider: React.FunctionComponent = ({ children }) => {
