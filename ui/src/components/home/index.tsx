@@ -1,8 +1,10 @@
+import AutoRefreshButton from "@components/autoRefreshButton";
 import FilterPanel, { Filter } from "@components/filterPanel";
 import IssueTable from "@components/issueTable";
+import { Choose, Otherwise, When } from "@core/types";
 import { whyDidYouRender } from "@core/utils";
 import { TasksSvcContext } from "@services/servicesProvider";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Spinner } from "reactstrap";
 import { Issue } from "src/models/task";
 import { User } from "src/models/user";
@@ -54,28 +56,27 @@ const Home: React.FunctionComponent<Props> = () => {
         return result;
     }, [filter, issues]);
 
-    useEffect(() => {
-        const refreshIssues = async (): Promise<void> => {
-            setIssues(await getAllIssuesInTheCurrentSprint());
-            setLoading(false);
-        };
-        const interval = setInterval(refreshIssues, 5 * 60 * 1000);
-        refreshIssues();
-        return () => clearInterval(interval);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const refreshIssues = useCallback(async (): Promise<void> => {
+        setIssues(await getAllIssuesInTheCurrentSprint());
+    }, [getAllIssuesInTheCurrentSprint]);
+
     useEffect(() => {
         (async () => {
             setUsers(await getAllUsers());
         })();
     }, [getAllUsers]);
 
-    if (loading)
-        return <Spinner className={classes.spinner} />;
-
     return <>
+        <AutoRefreshButton className={classes.refreshButton} refresh={refreshIssues} setLoading={setLoading} interval={5 * 60 * 1000} />
         <FilterPanel filter={filter} onChange={setFilter} />
-        <IssueTable issues={filteredIssues} users={users} />
+        <Choose>
+            <When condition={loading}>
+                <Spinner className={classes.spinner} />
+            </When>
+            <Otherwise>
+                <IssueTable issues={filteredIssues} users={users} refresh={refreshIssues} />
+            </Otherwise>
+        </Choose>
     </>;
 };
 whyDidYouRender(Home);

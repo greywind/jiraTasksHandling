@@ -16,6 +16,9 @@ const styles = (theme: Theme) => ({
         top: `calc(45vh - ${spinnerSize / 2}px)`,
         left: `calc(50vw - ${spinnerSize / 2}px)`,
     },
+    refreshButton: {
+        marginTop: 10,
+    },
 });
 type Names = keyof ReturnType<typeof styles>;
 
