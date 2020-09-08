@@ -29,6 +29,12 @@ function normalizeIssue(issue: IssueDto, i = 0, array: IssueDto[] = []): Issue {
     }
     const crSummary = `CR for '${issue.fields.summary}'`.toLowerCase();
     const qaSummary = `QA for '${issue.fields.summary}'`.toLowerCase();
+    let qa = issue.fields.subtasks?.find(st => st.fields.summary.toLowerCase() == qaSummary);
+    if (!qa)
+        qa = issue.fields.subtasks?.find(st => st.fields.issuetype.name == "QA");
+
+    const cr = issue.fields.subtasks?.find(st => st.fields.summary.toLowerCase() == crSummary);
+
     const result: Issue = {
         id: issue.id,
         issueKey: issue.key,
@@ -37,8 +43,8 @@ function normalizeIssue(issue: IssueDto, i = 0, array: IssueDto[] = []): Issue {
         status: issue.fields.status.name as IssueStatus,
         assignee: normalizeUser(issue.fields.assignee) || unassignedUser,
         subtask: issue.fields.issuetype.subtask,
-        cr: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary.toLowerCase() == crSummary), i, array),
-        qa: normalizeIssue(issue.fields.subtasks?.find(st => st.fields.summary.toLowerCase() == qaSummary), i, array),
+        cr: normalizeIssue(cr, i, array),
+        qa: normalizeIssue(qa, i, array),
     };
     return result;
 }
