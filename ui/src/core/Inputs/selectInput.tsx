@@ -66,10 +66,9 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
         return result;
     }, [multi, nullable, options, placeholder]);
     const val = useMemo(() => {
-        const vals = Array.isArray(value)
-            ? value?.split(",")?.map(p => p.trim())
-            : value;
-        if (!vals) return;
+        const vals = value?.split(",")?.map(p => p.trim());
+        if (!vals || !vals.length)
+            return [];
         return opts.filter(p => vals.includes(p.value?.toString()));
     }, [opts, value]);
     const onChangeProxy = useCallback(
@@ -80,7 +79,7 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
                 return;
             }
             if (Array.isArray(param))
-                return void onChange(name, param.map(p => p.value).join(", "));
+                return void onChange(name, param.map(p => p.value).join(","));
             onChange?.(name, (param.value || "").toString());
             onChangeForHook?.((param.value || "").toString());
         },

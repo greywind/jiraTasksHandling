@@ -1,5 +1,6 @@
-import { ValidationOptions } from "react-hook-form/dist/types";
 import { AvailableLocales } from "@core/services/localeSvc";
+import { ReactNode } from "react";
+import { ValidationOptions } from "react-hook-form/dist/types";
 
 export interface InputProps {
     validation?: ValidationOptions;
@@ -12,7 +13,7 @@ export interface DateInputProps extends InputProps {
 }
 
 export interface OptionType {
-    label: string;
+    label: ReactNode;
     value: string | number | Date;
 }
 
