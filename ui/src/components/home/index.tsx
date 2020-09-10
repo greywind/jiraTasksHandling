@@ -46,11 +46,11 @@ const Home: React.FunctionComponent<Props> = () => {
         if (!filter.showCanceled)
             result = result.filter(i => i.status !== "Canceled");
         if (filter.assignee) {
-            const lowercasedAssignee = filter.assignee.toLowerCase();
+            const ids = filter.assignee?.split(",") || [];
             result = result.filter(i =>
-                i.assignee.displayName.toLowerCase().includes(lowercasedAssignee) ||
-                i.cr?.assignee?.displayName?.toLowerCase().includes(lowercasedAssignee) ||
-                i.qa?.assignee?.displayName?.toLowerCase().includes(lowercasedAssignee)
+                ids.includes(i.assignee.accountId) ||
+                ids.includes(i.cr?.assignee?.accountId) ||
+                ids.includes(i.qa?.assignee?.accountId)
             );
         }
         return result;
@@ -68,13 +68,13 @@ const Home: React.FunctionComponent<Props> = () => {
 
     return <>
         <AutoRefreshButton className={classes.refreshButton} refresh={refreshIssues} setLoading={setLoading} interval={5 * 60 * 1000} />
-        <FilterPanel filter={filter} onChange={setFilter} />
+        <FilterPanel filter={filter} onChange={setFilter} users={users} />
         <Choose>
             <When condition={loading}>
                 <Spinner className={classes.spinner} />
             </When>
             <Otherwise>
-                <IssueTable issues={filteredIssues} users={users} refresh={refreshIssues} />
+                <IssueTable issues={filteredIssues} users={users} />
             </Otherwise>
         </Choose>
     </>;
