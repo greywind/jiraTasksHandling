@@ -3,10 +3,10 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"text/template"
 
 	"github.com/greywind/jiraTasksHandling/config"
 )
@@ -16,6 +16,41 @@ type issue struct {
 	Summary string
 }
 
+type createIssueBody struct {
+	Fields struct {
+		Project struct {
+			Id int `json:"id,string"`
+		} `json:"project"`
+		Summary   string `json:"summary"`
+		Issuetype struct {
+			Id int `json:"id,string"`
+		} `json:"issuetype"`
+		Parent struct {
+			Id string `json:"id"`
+		} `json:"parent"`
+	} `json:"fields"`
+}
+
+func createQASubtaskBody(parentIssue issue) createIssueBody {
+	result := createIssueBody{}
+	result.Fields.Project.Id = 10006
+	result.Fields.Summary = fmt.Sprintf("QA for '%v'", parentIssue.Summary)
+	result.Fields.Issuetype.Id = 10006
+	result.Fields.Parent.Id = parentIssue.ID
+
+	return result
+}
+
+func createCRSubtaskBody(parentIssue issue) createIssueBody {
+	result := createIssueBody{}
+	result.Fields.Project.Id = 10006
+	result.Fields.Summary = fmt.Sprintf("CR for '%v'", parentIssue.Summary)
+	result.Fields.Issuetype.Id = 10002
+	result.Fields.Parent.Id = parentIssue.ID
+
+	return result
+}
+
 // CreateQASubtask creates a QA subtask for issue passed via body in form of:
 // 	{
 // 		ID      string,
@@ -23,7 +58,7 @@ type issue struct {
 // 	}
 // The summary for a new task will be the summary of parent task prefixed with "QA for"
 func CreateQASubtask(resp http.ResponseWriter, req *http.Request) {
-	createSubtask(resp, req, createQASubtaskBodyStr)
+	createSubtask(resp, req, createQASubtaskBody)
 }
 
 // CreateCRSubtask creates a code review subtask for issue passed via body in form of:
@@ -33,10 +68,10 @@ func CreateQASubtask(resp http.ResponseWriter, req *http.Request) {
 // 	}
 // The summary for a new task will be the summary of parent task prefixed with "CR for"
 func CreateCRSubtask(resp http.ResponseWriter, req *http.Request) {
-	createSubtask(resp, req, createCRSubtaskBodyStr)
+	createSubtask(resp, req, createCRSubtaskBody)
 }
 
-func createSubtask(resp http.ResponseWriter, req *http.Request, createSubtaskBodyStr string) {
+func createSubtask(resp http.ResponseWriter, req *http.Request, createIssueBodyFunc func(issue) createIssueBody) {
 	resp.Header().Set("Access-Control-Allow-Origin", config.Get().UiUrl)
 	resp.Header().Set("Access-Control-Allow-Credentials", "true")
 	resp.Header().Set("Access-Control-Allow-Headers", "Accept,Content-Type")
@@ -57,15 +92,14 @@ func createSubtask(resp http.ResponseWriter, req *http.Request, createSubtaskBod
 		return
 	}
 
-	bodyTemplate := template.Must(template.New("body").Parse(createSubtaskBodyStr))
-	var buf bytes.Buffer
-	err = bodyTemplate.Execute(&buf, parentIssue)
+	body := createIssueBodyFunc(parentIssue)
+	bodyJson, err := json.Marshal(body)
 	if err != nil {
 		http.Error(resp, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	jiraReq, _ := http.NewRequest("POST", config.Get().JiraBaseUrl+"/issue/", &buf)
+	jiraReq, _ := http.NewRequest("POST", config.Get().JiraBaseUrl+"/issue/", bytes.NewReader(bodyJson))
 	jiraReq.Header.Add("Content-Type", "application/json")
 	jiraReq.SetBasicAuth(config.Get().JiraUsername, config.Get().JiraPassword)
 
@@ -109,37 +143,3 @@ func createSubtask(resp http.ResponseWriter, req *http.Request, createSubtaskBod
 
 	io.Copy(resp, jiraResp.Body)
 }
-
-const createQASubtaskBodyStr = `
-{
-	"fields": {
-		"project": {
-			"id": 10006
-		},
-		"summary": "QA for '{{.Summary}}'",
-		"issuetype": {
-			"id": 10006
-		},
-		"parent": {
-			"id": "{{.ID}}"
-		}
-	}
-}
-`
-
-const createCRSubtaskBodyStr = `
-{
-	"fields": {
-		"project": {
-			"id": 10006
-		},
-		"summary": "CR for '{{.Summary}}'",
-		"issuetype": {
-			"id": 10002
-		},
-		"parent": {
-			"id": "{{.ID}}"
-		}
-	}
-}
-`
