@@ -2,7 +2,7 @@ import BoolInput from "@core/Inputs/boolInput";
 import SelectInput from "@core/Inputs/selectInput";
 import { OptionType } from "@core/Inputs/types";
 import UserName from "@shared/userName";
-import React, { FC, useMemo } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import { Col, Row } from "reactstrap";
 import { User } from "src/models/user";
 import { useStyles } from "./styles";
@@ -31,6 +31,10 @@ const FilterPanel: FC<Props> = props => {
     const onChangeString = (field: keyof Filter, value: string): void => props.onChange({ ...props.filter, [field]: value });
 
     const usersAsOptions = useMemo(() => props.users?.map<OptionType>(u => ({ label: <UserName user={u} />, value: u.accountId })) || [], [props.users]);
+    const filterUsersOptions = useCallback((opt: OptionType, rawInput: string) => {
+        const user = props.users.find(u => u.accountId == opt.value);
+        return user.displayName.toLowerCase().includes(rawInput.toLowerCase());
+    }, [props.users]);
 
     const classes = useStyles();
 
@@ -60,7 +64,7 @@ const FilterPanel: FC<Props> = props => {
         </Row>
         <Row>
             <Col className={classes.value}>
-                <SelectInput placeholder="Assignee" name="assignee" multi value={props.filter.assignee} onChange={onChangeString} options={usersAsOptions} />
+                <SelectInput placeholder="Assignee" name="assignee" multi value={props.filter.assignee} onChange={onChangeString} options={usersAsOptions} filterOption={filterUsersOptions} />
             </Col>
         </Row>
     </div>;

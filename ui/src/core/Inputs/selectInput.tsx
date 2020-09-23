@@ -13,6 +13,7 @@ export interface SelectInputProps extends InputProps<string> {
     options: OptionType[] | string[];
     nullable?: boolean;
     multi?: boolean;
+    filterOption?: (option: OptionType, rawInput: string) => boolean;
 }
 
 function isStringArray(opts: OptionType[] | string[]): opts is string[] {
@@ -48,6 +49,7 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
     nullable,
     multi,
     error,
+    filterOption,
 }) => {
     const opts = useMemo((): OptionType[] => {
         let result;
@@ -124,6 +126,7 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
             options={opts}
             styles={reactSelectStyles}
             theme={reactSelectTheme}
+            filterOption={filterOption}
         />
     );
 };
