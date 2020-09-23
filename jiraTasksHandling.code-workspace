@@ -1,0 +1,25 @@
+{
+    "folders": [
+        {
+            "path": "ui"
+        },
+        {
+            "path": "backend"
+        }
+    ],
+    "settings": {},
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Launch",
+                "type": "go",
+                "request": "launch",
+                "mode": "auto",
+                "program": "${workspaceFolder:backend}",
+                "env": {},
+                "args": []
+            }
+        ]
+    }
+}

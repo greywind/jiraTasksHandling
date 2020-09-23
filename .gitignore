@@ -2,7 +2,6 @@ node_modules/
 output/
 webpack.config.variables.js
 .vscode/
-*.code-workspace
 built/
 coverage/
 config.json
