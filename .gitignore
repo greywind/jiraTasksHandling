@@ -4,5 +4,5 @@ webpack.config.variables.js
 .vscode/
 built/
 coverage/
-config.json
+backend/config.json
 backend/gin-bin.exe

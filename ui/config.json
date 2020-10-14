@@ -1,0 +1,4 @@
+{
+    "apiUrl": "//localhost:8091/",
+    "jiraTaskBaseUrl": "https://smooveio.atlassian.net/browse/"
+}
